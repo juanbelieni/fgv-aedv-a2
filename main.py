@@ -4,6 +4,7 @@ import streamlit as st
 
 st.set_page_config(page_title="A2 de AEDV")
 
+
 @st.cache
 def get_data():
     import pandas as pd
@@ -86,7 +87,6 @@ st.write(
     "se dá muito mais na população mais velha. Como não sabemos o método de coleta desses "
     "dados, só é possível concluir que ..."
 )
-
 
 # Gráfico 2
 
