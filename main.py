@@ -3,8 +3,6 @@ import plotly.graph_objects as go
 import streamlit as st
 
 st.set_page_config(page_title="A2 de AEDV")
-st.title("A2 de AEDV")
-
 
 @st.cache
 def get_data():
@@ -17,6 +15,26 @@ def get_data():
 
     return df
 
+
+st.title("A2 de AEDV")
+
+st.write(
+    "A base de dados escolhida foi a "
+    "[Stroke Prediction Dataset | Kaggle](https://www.kaggle.com/fedesoriano/stroke-prediction-dataset), "
+    "por possuir dados de tipos diversos e que permitem uma boa "
+    "análise exploratória com potenciais insights sobre a correlação entre os casos e os dados."
+)
+
+# Gráfico 1
+
+st.header("Gráfico 1")
+
+st.write(
+    "Nesse gráfico, tivemos o objetivo de comparar como a idade afeta "
+    "a ocorrência de derrame em populações que possuíam e não possuíam"
+    "um determinado tipo de doença. Abaixo, é possível filtrar os dados "
+    "dinamicamente."
+)
 
 data = get_data()
 
@@ -38,7 +56,7 @@ fig.add_trace(go.Violin(
     y=data["age"][data["stroke"] == "Não"],
     name='Não teve derrame',
     side="negative",
-    line_color="blue",
+    line_color="#A9CF54",
     hoverinfo="skip"
 ))
 
@@ -47,7 +65,7 @@ fig.add_trace(go.Violin(
     y=data["age"][data["stroke"] == "Sim"],
     name='Teve derrame',
     side="positive",
-    line_color="red",
+    line_color="#F1433F",
     hoverinfo="skip"
 ))
 
@@ -62,6 +80,28 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig)
+
+st.write(
+    "Para ambas as doenças, a incidência daqueles que tiveram algumas delas e/ou derrame "
+    "se dá muito mais na população mais velha. Como não sabemos o método de coleta desses "
+    "dados, só é possível concluir que ..."
+)
+
+
+# Gráfico 2
+
+st.header("Gráfico 2")
+
+st.write(
+    "Para essa análise, buscamos uma que permitisse "
+    "visualizar a dispersão da ocorrência de derrame ou não de acordo "
+    "com o nível de glucose médio e o IMC dos pacientes."
+)
+
+st.write(
+    "Além disso, foi adicionada uma barra horizontal com a valor numérico da "
+    "média geral do nível de glucose para cada caso."
+)
 
 fig = px.scatter(
     data.query("bmi < 50"),
@@ -102,9 +142,5 @@ fig.add_hline(
     annotation_position="top left"
 )
 fig.update_traces(marker=dict(opacity=0.5))
-
-st.plotly_chart(fig)
-
-fig = px.box(data.query("age > 20"), x="ever_married", y="bmi")
 
 st.plotly_chart(fig)
