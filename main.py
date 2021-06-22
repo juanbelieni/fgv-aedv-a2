@@ -2,6 +2,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
+st.set_page_config(page_title="A2 de AEDV")
+st.title("A2 de AEDV")
+
 
 @st.cache
 def get_data():
@@ -33,6 +36,7 @@ fig = go.Figure()
 fig.add_trace(go.Violin(
     x=data[disease_option][data["stroke"] == "Não"],
     y=data["age"][data["stroke"] == "Não"],
+    name='Não teve derrame',
     side="negative",
     line_color="blue",
     hoverinfo="skip"
@@ -41,6 +45,7 @@ fig.add_trace(go.Violin(
 fig.add_trace(go.Violin(
     x=data[disease_option][data["stroke"] == "Sim"],
     y=data["age"][data["stroke"] == "Sim"],
+    name='Teve derrame',
     side="positive",
     line_color="red",
     hoverinfo="skip"
@@ -64,20 +69,39 @@ fig = px.scatter(
     y="avg_glucose_level",
     facet_col="stroke",
     color="age",
+    color_continuous_scale="burg",
     labels={
         "bmi": "IMC",
         "avg_glucose_level": "Nível de glucose médio",
         "hypertension": "Hipertensão",
-        "heart_disease": "Doença cardíaca"
+        "heart_disease": "Doença cardíaca",
+        "age": "Idade",
+        "stroke": "Teve derrame"
     }
 )
 
-fig.add_hline(y=data.query("stroke == 'Sim'").avg_glucose_level.mean(), col=1, line_color="red")
-fig.add_hline(y=data.query("stroke == 'Não'").avg_glucose_level.mean(), col=2, line_color="red")
-fig.layout.xaxis.fixedrange = True
-fig.layout.yaxis.fixedrange = True
-fig.update_traces(marker=dict(opacity=0.5))
+stroke_mean_glucose_level = int(data.query("stroke == 'Sim'").avg_glucose_level.mean())
+not_stroke_mean_glucose_level = int(data.query("stroke == 'Não'").avg_glucose_level.mean())
 
+fig.add_hline(
+    y=stroke_mean_glucose_level,
+    col=1,
+    line_color="black",
+    annotation_text=stroke_mean_glucose_level,
+    annotation_font_size=12,
+    annotation_font_color="black",
+    annotation_position="top left"
+)
+fig.add_hline(
+    y=not_stroke_mean_glucose_level,
+    col=2,
+    line_color="black",
+    annotation_text=not_stroke_mean_glucose_level,
+    annotation_font_size=12,
+    annotation_font_color="black",
+    annotation_position="top left"
+)
+fig.update_traces(marker=dict(opacity=0.5))
 
 st.plotly_chart(fig)
 
